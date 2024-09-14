@@ -40,35 +40,23 @@ public class LoadedDie implements Die {
     private byte calcLoaded() {
         int val = ThreadLocalRandom.current().nextInt(totalWeight);
         
-        if (weight1 > 0) {
-            val -= weight1;
-            if (val <= 0) return 1;
-        }
+        val -= weight1;
+        if (val < 0) return 1;
 
-        if (weight2 > 0) {
-            val -= weight2;
-            if (val <= 0) return 2;
-        }
+        val -= weight2;
+        if (val < 0) return 2;
 
-        if (weight3 > 0) {
-            val -= weight3;
-            if (val <= 0) return 3;
-        }
+        val -= weight3;
+        if (val < 0) return 3;
 
-        if (weight4 > 0) {
-            val -= weight4;
-            if (val <= 0) return 4;
-        }
+        val -= weight4;
+        if (val < 0) return 4;
 
-        if (weight5 > 0) {
-            val -= weight5;
-            if (val <= 0) return 5;
-        }
+        val -= weight5;
+        if (val < 0) return 5;
 
-        if (weight6 > 0) {
-            val -= weight6;
-            if (val <= 0) return 6;
-        }
+        val -= weight6;
+        if (val < 0) return 6;
 
         throw new IllegalStateException("Loaded die logic not working correctly");
     }
