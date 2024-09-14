@@ -14,56 +14,41 @@ public class LoadedDie implements Die {
         };
     }
 
-    byte value;
-    int weight1;
-    int weight2;
-    int weight3;
-    int weight4;
-    int weight5;
-    int weight6;
-    int totalWeight;
+    private byte value;
+    private final int[] weights;
+    private final int totalWeight;
 
-    public LoadedDie(int weight1, int weight2, int weight3, int weight4, int weight5, int weight6) {
-        this.weight1 = weight1;
-        this.weight2 = weight2;
-        this.weight3 = weight3;
-        this.weight4 = weight4;
-        this.weight5 = weight5;
-        this.weight6 = weight6;
-        this.totalWeight = weight1 + weight2 + weight3 + weight4 + weight5 + weight6;
-
-        if (weight1 < 0 || weight2 < 0 || weight3 < 0 || weight4 < 0 || weight5 < 0 || weight6 < 0 || totalWeight <= 0) {
-            throw new IllegalArgumentException("Loaded die weights cannot be less than 0, and the sum of weights must be at least 1");
+    public LoadedDie(int ... weights) {
+        if (weights == null || weights.length != 6) {
+            throw new IllegalArgumentException("There must be 6 int arguments (or an array of 6 ints) to the loaded die constructor");
         }
+        
+        this.weights = weights.clone(); // encapsulation, so the array can't be modified from the outside
+        int total = 0;
+        for (int weight : this.weights) {
+            if (weight < 0) throw new IllegalArgumentException("Loaded die weights cannot be less than 0");
+            total += weight;
+        }
+
+        if (total <= 0) {
+            throw new IllegalArgumentException("The sum of loaded die weights must be at least 1");
+        }
+        this.totalWeight = total;
 
         this.roll();
     }
 
     public void roll() {
-        this.value = this.calcLoaded();
-    }
+        int val = ThreadLocalRandom.current().nextInt(this.totalWeight);
 
-    private byte calcLoaded() {
-        int val = ThreadLocalRandom.current().nextInt(totalWeight);
+        for (int i = 0; i < 6; i++) {
+            val -= weights[i];
+            if (val < 0) {
+                this.value = (byte)(i + 1);
+                return;
+            }
+        }
         
-        val -= weight1;
-        if (val < 0) return 1;
-
-        val -= weight2;
-        if (val < 0) return 2;
-
-        val -= weight3;
-        if (val < 0) return 3;
-
-        val -= weight4;
-        if (val < 0) return 4;
-
-        val -= weight5;
-        if (val < 0) return 5;
-
-        val -= weight6;
-        if (val < 0) return 6;
-
         throw new IllegalStateException("Loaded die logic not working correctly");
     }
 
