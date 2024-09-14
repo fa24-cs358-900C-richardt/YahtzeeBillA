@@ -75,16 +75,13 @@ public class GameEngine {
             System.out.println("Rolling to see who takes the first turn...");
         }
         
-        while (!pregame.done()) {
-            Player player = pregame.getCurrentPlayer();
+        for (Player player : pregame) {
             System.out.print("Rolling dice for " + player.getName() + " : ");
             pregame.rollAllDice();
             for (byte value : pregame.getDiceValues()) {
                 System.out.print(value + " ");
             }
             System.out.println("Total: " + pregame.getCurrentPlayerTotal());
-
-            pregame.nextPlayer();
         }
 
         List<Player> topRollers = pregame.getTopRollers();

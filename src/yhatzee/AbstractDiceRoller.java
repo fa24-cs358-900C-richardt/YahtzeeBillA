@@ -14,7 +14,9 @@ import yhatzee.interfaces.Player;
  * Intended for concrete implementation by StandardGame and StandardPregame
  */
 public abstract class AbstractDiceRoller implements DiceRoller {
-    protected int currentPlayer = 0;
+    protected Player currentPlayer;
+    protected int currentPlayerIndex = -1;
+    protected int nextPlayerIndex = 0;
 
     protected final List<Player> players;
     protected final List<Die> dice;
@@ -37,12 +39,17 @@ public abstract class AbstractDiceRoller implements DiceRoller {
     }
 
     @Override
+    public boolean hasNext() {
+        return this.nextPlayerIndex >= 0 && this.nextPlayerIndex < players.size();
+    }
+
+    @Override
     public List<Player> getPlayers() {
         return this.players;
     }
 
     public Player getCurrentPlayer() {
-        return players.get(currentPlayer);
+        return currentPlayer;
     }
 
     public byte[] getDiceValues() {

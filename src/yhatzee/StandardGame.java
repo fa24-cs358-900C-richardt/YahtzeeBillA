@@ -14,13 +14,13 @@ public class StandardGame extends AbstractDiceRoller implements Game {
             throw new IllegalStateException("Pre-game was not propertly completed");
         }
 
-        this.currentPlayer = -1;
+        this.nextPlayerIndex = -1;
         for (int i = 0; i < this.players.size(); i++) {
             if (topRollers.get(0) == this.players.get(i)) {
-                this.currentPlayer = i;
+                this.nextPlayerIndex = i;
             }
         }
-        if (this.currentPlayer == -1) {
+        if (this.nextPlayerIndex == -1) {
             throw new IllegalStateException("Could not find top rolling player in the players list");
         }
     }
@@ -30,16 +30,14 @@ public class StandardGame extends AbstractDiceRoller implements Game {
      * Players go from left to right during the game
      */
     @Override
-    public void nextPlayer() {
-        this.currentPlayer--;
-        if (this.currentPlayer < 0) {
-            this.currentPlayer = this.players.size() - 1;
+    public Player next() {
+        this.currentPlayerIndex = this.nextPlayerIndex;
+        this.nextPlayerIndex--;
+        if (this.nextPlayerIndex < 0) {
+            this.nextPlayerIndex = this.players.size() - 1;
         }
-    }
-
-    @Override
-    public boolean done() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'done'");
+        
+        this.currentPlayer = this.players.get(this.currentPlayerIndex);
+        return this.currentPlayer;
     }
 }

@@ -29,33 +29,37 @@ public class StandardPregame extends AbstractDiceRoller implements Pregame {
      * whether to keep iterating
      */
     @Override
-    public void nextPlayer() {
-        if (this.totals[this.currentPlayer] == 0) {
+    public Player next() throws IllegalStateException, NoSuchElementException {
+        if (this.nextPlayerIndex >= this.players.size()) {
+            throw new NoSuchElementException("All players have already rolled!");
+        }
+
+        if (this.currentPlayerIndex >= 0 && this.totals[this.currentPlayerIndex] == 0) {
             throw new IllegalStateException("The current player has not rolled yet");
         }
-        
-        if (this.currentPlayer < this.players.size()) {
-            this.currentPlayer++;
-        } else {
-            throw new IllegalStateException("Cannot call nextPlayer after the pregame is done");
-        }
+
+        this.currentPlayerIndex = this.nextPlayerIndex;
+        this.nextPlayerIndex++;
+
+        this.currentPlayer = this.players.get(this.currentPlayerIndex);
+        return this.currentPlayer;
     }
 
-    @Override
-    public boolean done() {
-        return this.currentPlayer == players.size();
-    }
+    
 
     @Override
     public void rollAllDice() {
-        if (totals[this.currentPlayer] != 0) {
+        if (this.currentPlayerIndex < 0) {
+            throw new IllegalStateException("The first player has not yet been queued up.  Call next() first");
+
+        } else if (totals[this.currentPlayerIndex] != 0) {
             throw new IllegalStateException("The current player has already rolled!");
         }
 
         super.rollAllDice();
 
         for (Die die : dice) {
-            totals[this.currentPlayer] += die.getValue();
+            totals[this.currentPlayerIndex] += die.getValue();
         }
     }
 
@@ -76,7 +80,7 @@ public class StandardPregame extends AbstractDiceRoller implements Pregame {
 
     @Override
     public byte getCurrentPlayerTotal() throws IndexOutOfBoundsException {
-        return this.totals[this.currentPlayer];
+        return this.totals[this.currentPlayerIndex];
     }
 
     @Override
