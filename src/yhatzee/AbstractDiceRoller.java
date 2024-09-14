@@ -11,7 +11,7 @@ import yhatzee.interfaces.Player;
  * but allows any list of dice to be passed in provided the list is non-null and has a size
  * of 5.
  * 
- * Intended for concrete implementation by FairGame and FairPregame
+ * Intended for concrete implementation by StandardGame and StandardPregame
  */
 public abstract class AbstractDiceRoller implements DiceRoller {
     protected int currentPlayer = 0;
