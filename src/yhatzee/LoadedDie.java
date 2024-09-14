@@ -15,7 +15,13 @@ public class LoadedDie implements Die {
     }
 
     byte value;
-    int weight1, weight2, weight3, weight4, weight5, weight6, totalWeight;
+    int weight1;
+    int weight2;
+    int weight3;
+    int weight4;
+    int weight5;
+    int weight6;
+    int totalWeight;
 
     public LoadedDie(int weight1, int weight2, int weight3, int weight4, int weight5, int weight6) {
         this.weight1 = weight1;
