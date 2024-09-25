@@ -6,7 +6,7 @@ import yhatzee.interfaces.Game;
 import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
-public class StandardGame extends AbstractDiceRoller implements Game {
+public class StandardGame extends AbstractDiceEngine implements Game {
     public StandardGame(Pregame pregame) {
         super(pregame.getPlayers());
         List<Player> topRollers = pregame.getTopRollers();

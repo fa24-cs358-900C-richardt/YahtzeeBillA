@@ -1,5 +1,5 @@
 package yhatzee.interfaces;
 
-public interface Game extends DiceRoller {
+public interface Game extends DiceEngine {
     
 }

@@ -2,9 +2,7 @@ package yhatzee;
 
 import java.util.*;
 
-import yhatzee.interfaces.DiceRoller;
-import yhatzee.interfaces.Die;
-import yhatzee.interfaces.Player;
+import yhatzee.interfaces.*;
 
 /**
  * Abstract implementation of DiceRoller interface, which defaults to using the fair die,
@@ -13,7 +11,7 @@ import yhatzee.interfaces.Player;
  * 
  * Intended for concrete implementation by StandardGame and StandardPregame
  */
-public abstract class AbstractDiceRoller implements DiceRoller {
+public abstract class AbstractDiceEngine implements DiceEngine {
     protected Player currentPlayer;
     protected int currentPlayerIndex = -1;
     protected int nextPlayerIndex = 0;
@@ -21,11 +19,11 @@ public abstract class AbstractDiceRoller implements DiceRoller {
     protected final List<Player> players;
     protected final List<Die> dice;
 
-    protected AbstractDiceRoller(List<Player> players) {
+    protected AbstractDiceEngine(List<Player> players) {
         this(players, Arrays.asList(FairDie.makeDice()));
     }
 
-    protected AbstractDiceRoller(List<Player> players, List<Die> dice) {
+    protected AbstractDiceEngine(List<Player> players, List<Die> dice) {
         if (players == null || players.size() < 1 || players.size() > 6) {
             throw new IllegalArgumentException("Illegal players array");
         }
@@ -52,14 +50,8 @@ public abstract class AbstractDiceRoller implements DiceRoller {
         return currentPlayer;
     }
 
-    public byte[] getDiceValues() {
-        return new byte[] {
-            dice.get(0).getValue(),
-            dice.get(1).getValue(),
-            dice.get(2).getValue(),
-            dice.get(3).getValue(),
-            dice.get(4).getValue()
-        };
+    public DiceValues getDiceValues() {
+        return new DiceValues(dice);
     }
 
     public byte getDieValue(int index) throws IndexOutOfBoundsException {

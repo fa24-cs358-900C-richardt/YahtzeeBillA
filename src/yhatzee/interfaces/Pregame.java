@@ -6,7 +6,7 @@ import java.util.List;
  * Represents the pre-game stage at which players roll dice to see who goes first
  */
 
-public interface Pregame extends DiceRoller {
+public interface Pregame extends DiceEngine {
     /**
      * 
      * @return the total dice roll for the current player.  0 if they have not rolled yet

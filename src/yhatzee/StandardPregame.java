@@ -7,7 +7,7 @@ import yhatzee.interfaces.Game;
 import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
-public class StandardPregame extends AbstractDiceRoller implements Pregame {
+public class StandardPregame extends AbstractDiceEngine implements Pregame {
     protected final byte[] totals;
     protected List<Player> topRollers = null;
 

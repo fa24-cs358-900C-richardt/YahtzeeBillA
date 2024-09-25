@@ -8,7 +8,8 @@ import java.util.*;
  * returns itself as its own stateful Iterator, since a game (or pre-game) can only be fully
  * iterated over once.
  */
-public interface DiceRoller extends Iterator<Player>, Iterable<Player> {
+public interface DiceEngine extends Iterator<Player>, Iterable<Player> {
+
     /**
      * Advances to the next player to roll
      * @throws NoSuchElementException if the end of game (or end of pre-game has been reached)
@@ -33,7 +34,7 @@ public interface DiceRoller extends Iterator<Player>, Iterable<Player> {
     /**
      * @return the array of current dice values, from the most recent roll
      */
-    public byte[] getDiceValues();
+    public DiceValues getDiceValues();
 
     /**
      * @param index the index of the die to get the value of
@@ -67,7 +68,7 @@ public interface DiceRoller extends Iterator<Player>, Iterable<Player> {
      * 
      * @return this
      */
-    default DiceRoller iterator() {
+    default DiceEngine iterator() {
         return this;
     }
 

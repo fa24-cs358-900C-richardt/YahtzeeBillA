@@ -3,7 +3,7 @@ package yhatzee;
 import java.io.*;
 import java.util.*;
 
-import yhatzee.interfaces.DiceRoller;
+import yhatzee.interfaces.DiceEngine;
 import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
@@ -55,9 +55,9 @@ public class GameEngine {
         }
     }
 
-    private DiceRoller currentGame;
+    private DiceEngine currentGame;
 
-    public DiceRoller getCurrentGame() {
+    public DiceEngine getCurrentGame() {
         return this.currentGame;
     }
     
@@ -78,9 +78,7 @@ public class GameEngine {
         for (Player player : pregame) {
             System.out.print("Rolling dice for " + player.getName() + " : ");
             pregame.rollAllDice();
-            for (byte value : pregame.getDiceValues()) {
-                System.out.print(value + " ");
-            }
+            System.out.print(pregame.getDiceValues());
             System.out.println("Total: " + pregame.getCurrentPlayerTotal());
         }
 
