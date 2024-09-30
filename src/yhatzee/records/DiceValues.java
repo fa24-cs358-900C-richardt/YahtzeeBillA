@@ -1,6 +1,8 @@
-package yhatzee.interfaces;
+package yhatzee.records;
 
 import java.util.*;
+
+import yhatzee.interfaces.*;
 
 public record DiceValues(byte[] values, boolean sorted) {
     /**

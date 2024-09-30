@@ -112,11 +112,6 @@ public class StandardPregame extends AbstractDiceEngine implements Pregame {
     }
 
     @Override
-    public Game startGame() throws IllegalStateException {
-        return new StandardGame(this);
-    }
-
-    @Override
     public Tiebreaker getTiebreaker() throws IllegalStateException {
         if (this.topRollers == null) {
             throw new IllegalStateException("Top roller hasn't been determined yet!");

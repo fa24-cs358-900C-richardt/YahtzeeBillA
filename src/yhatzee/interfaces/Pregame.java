@@ -28,13 +28,6 @@ public interface Pregame extends DiceEngine {
     public List<Player> getTopRollers() throws IllegalStateException;
 
     /**
-     * @return a game ready to start with the player who rolled the highest total
-     * @throws IllegalStateException if not all players have rolled, or if there is a tie that
-     * needs to be broken
-     */
-    public Game startGame() throws IllegalStateException;
-
-    /**
      * @return a Pregame Tiebreaker instance to break any ties over who goes first
      * @throws IllegalStateException if there were no ties to be broken
      */

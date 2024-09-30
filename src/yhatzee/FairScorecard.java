@@ -1,7 +1,7 @@
 package yhatzee;
 
-import yhatzee.interfaces.DiceValues;
 import yhatzee.interfaces.Scorecard;
+import yhatzee.records.DiceValues;
 
 public class FairScorecard implements Scorecard {
     private DiceValues[] rows = new DiceValues[13];
@@ -35,21 +35,9 @@ public class FairScorecard implements Scorecard {
     
         if (diceValues.isYahtzee()) {
             // Forced joker rule checks
-            if (this.getYahtzee() != null) {
-                if (this.getRow(diceValues.get(0)) == null) {
-                    if (rowNumber != diceValues.get(0)) {
-                        throw new IllegalArgumentException("Forced Joker Rule: You must play this to the appropriate upper row if available");
-                    }
-                } else if (rowNumber < 6) {
-                    //confirm that all the lower slots are taken
-                    for (int i = 7; i <= 13; i++) {
-                        if (this.rows[i] != null) {
-                            throw new IllegalArgumentException("Force Joker Rule: If the appropriate upper section is taken, but a lower section is available, you must play this to a lower section as a joker");
-                        }
-                    }
+            String forcedJokerCheck = forcedJokerCheck(rowNumber, diceValues.get(0));
+            if (forcedJokerCheck != null) throw new IllegalArgumentException(forcedJokerCheck);
 
-                }
-            }
 
             if (this.getYahtzeeScore() != 0) {
                 this.yahtzeeBonus += Scorecard.YHATZEE_BONUS;

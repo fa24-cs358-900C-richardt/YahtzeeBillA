@@ -3,15 +3,14 @@ package yhatzee;
 import java.io.*;
 import java.util.*;
 
-import yhatzee.interfaces.DiceEngine;
-import yhatzee.interfaces.Player;
-import yhatzee.interfaces.Pregame;
+import yhatzee.interfaces.*;
+import yhatzee.records.DiceValues;
 
-public class GameEngine {
+public class StandardGameEngine implements GameEngine {
     public static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) {
-        new GameEngine().run();
+        new StandardGameEngine().run();
     }
 
     public static String getString(String prompt) {
@@ -60,49 +59,15 @@ public class GameEngine {
     public DiceEngine getCurrentGame() {
         return this.currentGame;
     }
-    
-    public void run() {
-        List<Player> players = this.initPlayers();
-        this.runPregame(new StandardPregame(players, Arrays.asList(LoadedDie.makeDice(1, 1, 1, 200, 1, 1))));
+
+    public Pregame makePregame(List<Player> players) {
+        return new StandardPregame(players, Arrays.asList(LoadedDie.makeDice(1, 1, 1, 200, 1, 1)))
     }
 
-    public void runPregame(Pregame pregame) {
-        this.currentGame = pregame;
-
-        if (pregame instanceof Pregame.Tiebreaker) {
-            System.out.println("Rolling a tiebreaker to see who takes the first turn...");
-        } else {
-            System.out.println("Rolling to see who takes the first turn...");
-        }
-        
-        for (Player player : pregame) {
-            System.out.print("Rolling dice for " + player.getName() + " : ");
-            pregame.rollAllDice();
-            System.out.print(pregame.getDiceValues());
-            System.out.println("Total: " + pregame.getCurrentPlayerTotal());
-        }
-
-        List<Player> topRollers = pregame.getTopRollers();
-
-        if (topRollers.size() > 1) {
-            System.out.print("We have a tie between ");
-            if (topRollers.size() == 2) {
-                System.out.println(topRollers.get(0).getName() + " and " + topRollers.get(1).getName());
-
-            } else {
-                for (int i = 0; i < topRollers.size() - 1; i++) {
-                    System.out.print(topRollers.get(i).getName() + ", ");
-                }
-                System.out.println("and " + topRollers.get(topRollers.size() - 1).getName());
-            }
-            
-            runPregame(pregame.getTiebreaker());
-
-        } else {
-            System.out.println("The first turn goes to " + topRollers.get(0).getName());
-        }
+    public Game makeGame(Pregame finishedPregame) {
+        return new StandardGame(finishedPregame);
     }
-    
+
     public List<Player> initPlayers() {
         int numPlayers = getInt(1, 6, "How many players? (1-6)");
 
@@ -128,4 +93,44 @@ public class GameEngine {
 
         return players;
     }
+
+    public Pregame runPregame(Pregame pregame) {
+        this.currentGame = pregame;
+
+        if (pregame instanceof Pregame.Tiebreaker) {
+            System.out.println("Rolling a tiebreaker to see who takes the first turn...");
+        } else {
+            System.out.println("Rolling to see who takes the first turn...");
+        }
+        
+        for (Player player : pregame) {
+            System.out.print("Rolling dice for " + player.getName() + " : ");
+            pregame.rollAllDice();
+            DiceValues diceValues = pregame.getDiceValues();
+            System.out.println(diceValues + "Total: " + pregame.getCurrentPlayerTotal());
+        }
+
+        List<Player> topRollers = pregame.getTopRollers();
+
+        if (topRollers.size() > 1) {
+            System.out.print("We have a tie between ");
+            if (topRollers.size() == 2) {
+                System.out.println(topRollers.get(0).getName() + " and " + topRollers.get(1).getName());
+
+            } else {
+                for (int i = 0; i < topRollers.size() - 1; i++) {
+                    System.out.print(topRollers.get(i).getName() + ", ");
+                }
+                System.out.println("and " + topRollers.get(topRollers.size() - 1).getName());
+            }
+            
+            return runPregame(pregame.getTiebreaker());
+
+        } else {
+            System.out.println("The first turn goes to " + topRollers.get(0).getName());
+            return pregame;
+        }
+    }
+    
+    
 }

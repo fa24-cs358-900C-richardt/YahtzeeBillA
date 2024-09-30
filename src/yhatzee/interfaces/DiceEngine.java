@@ -2,6 +2,8 @@ package yhatzee.interfaces;
 
 import java.util.*;
 
+import yhatzee.records.DiceValues;
+
 /**
  * Parent interface for Pregame and Game interfaces.  Includes the basic player and
  * dice-rolling methods.  Implemented as an Iterator, and a 'self-referencing Iterable' which
@@ -57,7 +59,7 @@ public interface DiceEngine extends Iterator<Player>, Iterable<Player> {
      * @param die4 whether to roll die 4 (index 3)
      * @param die5 whether to roll die 5 (index 4)
      */
-    public void rollSomeDice(boolean die1, boolean die2, boolean die3, boolean die4, boolean die5);
+    public void rollSomeDice(Decision rollDecision);
 
 
 

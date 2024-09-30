@@ -7,6 +7,9 @@ import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
 public class StandardGame extends AbstractDiceEngine implements Game {
+    private int currentRound = 0;
+    private int startingPlayerIndex;
+
     public StandardGame(Pregame pregame) {
         super(pregame.getPlayers());
         List<Player> topRollers = pregame.getTopRollers();
@@ -15,9 +18,12 @@ public class StandardGame extends AbstractDiceEngine implements Game {
         }
 
         this.nextPlayerIndex = -1;
+        this.startingPlayerIndex = -1;
         for (int i = 0; i < this.players.size(); i++) {
             if (topRollers.get(0) == this.players.get(i)) {
                 this.nextPlayerIndex = i;
+                this.startingPlayerIndex = i;
+                break;
             }
         }
         if (this.nextPlayerIndex == -1) {
@@ -32,12 +38,38 @@ public class StandardGame extends AbstractDiceEngine implements Game {
     @Override
     public Player next() {
         this.currentPlayerIndex = this.nextPlayerIndex;
+        this.currentPlayer = this.players.get(this.currentPlayerIndex);
+
         this.nextPlayerIndex--;
         if (this.nextPlayerIndex < 0) {
             this.nextPlayerIndex = this.players.size() - 1;
         }
+
+        if (this.currentPlayerIndex == this.startingPlayerIndex) {
+            this.currentRound++;
+
+        } else if (this.currentRound == 13 && this.nextPlayerIndex == this.startingPlayerIndex) {
+            this.nextPlayerIndex = -1;
+        }
         
-        this.currentPlayer = this.players.get(this.currentPlayerIndex);
         return this.currentPlayer;
+    }
+
+
+    @Override
+    public int getCurrentRound() {
+        return this.currentRound;
+    }
+
+
+    @Override
+    public List<Player> getFinalRanking() throws IllegalStateException {
+        if (this.nextPlayerIndex != -1) {
+            throw new IllegalStateException("Cannot call getFinalRanking until the game is over!");
+        }
+
+        List<Player> ranking = new ArrayList<>(this.players);
+        ranking.sort((a, b) -> b.getScorecard().getGrandTotal() - a.getScorecard().getGrandTotal());
+        return ranking;
     }
 }

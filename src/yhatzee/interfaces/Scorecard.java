@@ -2,6 +2,8 @@ package yhatzee.interfaces;
 
 import java.util.*;
 
+import yhatzee.records.DiceValues;
+
 public interface Scorecard {
     /**
      * Get the scorecard row, indexed from 1 (not 0)
@@ -66,6 +68,12 @@ public interface Scorecard {
     public static final String SEPERATOR = "-".repeat(ALL_COLUMNS_WIDTH) + "\n";
 
 
+    /**
+     * Interfaces don't allow default overrides of Object.toString().  Implementations should
+     * call and return the value from this method in their own override of toString();
+     * 
+     * @return scorecard representation as a terminal-printable string
+     */
     default public String string() {
         StringBuilder sb = new StringBuilder(SEPERATOR);
         sb.ensureCapacity(SEPERATOR.length() * 25);
@@ -180,6 +188,34 @@ public interface Scorecard {
             default:
                 throw new IllegalArgumentException("rowNumber must be between 1 and 13: " + rowNumber);
         }
+    }
+
+    /**
+     * To be called only when submitting diceValues equivilent to a Yahtzee, to enforce the
+     * "forced joker" rule
+     * 
+     * @param sharedDiceValue the value which all dice have in the current "Yahtzee" roll
+     * @return the error string if forced joker rule was not obeyed, otherwise null
+     */
+    default public String forcedJokerCheck(int rowNumber, byte sharedDiceValue) {
+        if (this.getYahtzee() == null) {
+            return null;
+        }
+        
+        if (this.getRow(sharedDiceValue) == null) {
+            if (rowNumber != sharedDiceValue) {
+                throw new IllegalArgumentException("Forced Joker Rule: You must play a second Yahtzee to the appropriate upper row if available");
+            }
+        } else if (rowNumber < 6) {
+            //confirm that all the lower slots are taken
+            for (int i = 7; i <= 13; i++) {
+                if (this.getRow(i) != null) {
+                    throw new IllegalArgumentException("Force Joker Rule: If the appropriate upper section is taken, but a lower section is available, you must play a second Yahtzee to a lower section as a joker");
+                }
+            }
+        }
+
+        return null;
     }
 
     
@@ -313,5 +349,12 @@ public interface Scorecard {
 
     default public int getChanceScore() {
         return getRowScore(13);
+    }
+
+    default public boolean isFinished() {
+        for (int i = 1; i <= 13; i++) {
+            if (this.getRow(i) == null) return false;
+        }
+        return true;
     }
 }

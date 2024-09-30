@@ -3,6 +3,7 @@ package yhatzee;
 import java.util.*;
 
 import yhatzee.interfaces.*;
+import yhatzee.records.DiceValues;
 
 /**
  * Abstract implementation of DiceRoller interface, which defaults to using the fair die,
@@ -64,11 +65,11 @@ public abstract class AbstractDiceEngine implements DiceEngine {
         }
     }
 
-    public void rollSomeDice(boolean die1, boolean die2, boolean die3, boolean die4, boolean die5) {
-        if (die1) dice.get(0).roll();
-        if (die2) dice.get(1).roll();
-        if (die3) dice.get(2).roll();
-        if (die4) dice.get(3).roll();
-        if (die5) dice.get(4).roll();
+    public void rollSomeDice(Decision decision) {
+        if (decision.getDieDecision(0)) dice.get(0).roll();
+        if (decision.getDieDecision(1)) dice.get(1).roll();
+        if (decision.getDieDecision(2)) dice.get(2).roll();
+        if (decision.getDieDecision(3)) dice.get(3).roll();
+        if (decision.getDieDecision(4)) dice.get(4).roll();
     }
 }
