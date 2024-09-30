@@ -6,6 +6,10 @@ import yhatzee.records.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Implements the Die interface as a "Loaded Die", biased towards certain outcomes.  Can be used for testing
+ * or rigging a game
+ */
 public class LoadedDie implements Die {
     public static Dice makeDice(int weight1, int weight2, int weight3, int weight4, int weight5, int weight6) {
         return new StandardDice(List.of(

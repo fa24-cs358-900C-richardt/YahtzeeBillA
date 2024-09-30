@@ -9,6 +9,9 @@ import yhatzee.records.DiceValues;
 import yhatzee.records.RollDecision;
 import yhatzee.records.ScorecardDecision;
 
+/**
+ * Implements the Player interface, using console input/interactions with the human player to make decisions.
+ */
 public class HumanPlayer implements Player {
     private final String name;
     private Scorecard scorecard = new FairScorecard();
@@ -17,14 +20,17 @@ public class HumanPlayer implements Player {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setScorecard(Scorecard scorecard) {
         this.scorecard = scorecard;
     }
 
+    @Override
     public Scorecard getScorecard() {
         return scorecard;
     }

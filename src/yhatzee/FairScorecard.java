@@ -3,6 +3,10 @@ package yhatzee;
 import yhatzee.interfaces.Scorecard;
 import yhatzee.records.DiceValues;
 
+/**
+ * Concrete implementation of Scorecard which behaves as expected in a fair game.  Implements the required 3 methods,
+ * and adds caching for calculated totals which are cleared whenever a row is updated thus requiring recalculation.
+ */
 public class FairScorecard implements Scorecard {
     private DiceValues[] rows = new DiceValues[13];
     private int yahtzeeBonus = 0;

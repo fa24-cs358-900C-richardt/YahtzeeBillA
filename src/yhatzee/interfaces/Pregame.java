@@ -4,9 +4,8 @@ import yhatzee.records.*;
 import java.util.List;
 
 /**
- * Represents the pre-game stage at which players roll dice to see who goes first
+ * Represents the pre-game stage in which players roll dice to see who goes first
  */
-
 public interface Pregame extends TurnIterator {
     public void setCurrentPlayerTotal(DiceValues diceValues) throws IndexOutOfBoundsException;
 

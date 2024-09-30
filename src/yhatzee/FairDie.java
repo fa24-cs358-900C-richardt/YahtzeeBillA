@@ -5,6 +5,10 @@ import yhatzee.interfaces.*;
 import yhatzee.records.*;
 import java.util.*;
 
+/**
+ * A 6-sided fair die, which has an equal probably of turning
+ * each value between 1 and 6
+ */
 public class FairDie implements Die {
     public static Dice makeDice() {
         return new StandardDice(List.of(

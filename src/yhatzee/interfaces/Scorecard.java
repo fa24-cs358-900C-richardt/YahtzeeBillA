@@ -4,21 +4,35 @@ import java.util.*;
 
 import yhatzee.records.DiceValues;
 
+/**
+ * The scorecard interface.  There are a number of boilerplate default methods here, including some static methods and constants.
+ * There are only three methods which implementing classes need to override.  The rest provide out-of-the-box functionality, but
+ * can be overriden for caching or testing purposes.
+ */
 public interface Scorecard {
     /**
-     * Get the scorecard row, indexed from 1 (not 0)
-     * @return null if not yet filled, or if filled an array of 5 bytes representing dice values
+     * Get the dice values for the given scorecard row, indexed from 1 (not 0)
+     * @return null if not yet filled, or if filled the dice values present in the row
      */
     public DiceValues getRow(int rowNumber) throws IndexOutOfBoundsException;
 
+    /**
+     * @return the Yahtzee bonus score (50 points for each yahtzee rolled after the yahtzee row was full)
+     */
     public int getYahtzeeBonus();
 
+    /**
+     * @param rowNumber the row number to set.  As with getRow, this is 1-indexed (not 0 indexed)
+     * @param diceValues the dice values to set the row to.
+     */
     public void setRow(int rowNumber, DiceValues diceValues);
 
     /*
+     * IMPORTANT:
+     * 
      * Everything below is boilerplate code.
-     * Implentations only need to implement the above methods, but may override the boilerplate
-     * methods below for special cases (e.g. testing or rigging a game)
+     * Implentations only need to implement the above 3 methods, but may override the boilerplate
+     * methods below for special cases (e.g. testing or rigging a game, caching scores to avoid repetative recalculations, etc)
      */
 
 
@@ -56,6 +70,10 @@ public interface Scorecard {
 
     public static final int YHATZEE_BONUS = 50; // bonus for rolling a yahtzee when the yahtzee row was alrady filled with a scoring roll
 
+
+    /*
+     * The below constants are used to assist with the textual printing of the scorecard on the terminal
+     */
 
     public static final String JOKER = "(joker)";
 
@@ -110,12 +128,25 @@ public interface Scorecard {
         return sb.toString();
     }
 
+    /**
+     * Static utility method which appends spaces to a string builder
+     * @param sb string builder
+     * @param count the number of spaces to append
+     */
     public static void appendSpaces(StringBuilder sb, int count) {
         for (int i = 0; i < count; i++) {
             sb.append(' ');
         }
     }
 
+    /**
+     * Static utility method which appends a row from the scorecard to a string builder
+     * @param sb string builder
+     * @param row row number
+     * @param vals dice values
+     * @param joker whether the row is a joker
+     * @param score the score for the row
+     */
     public static void appendRow(StringBuilder sb, int row, DiceValues vals, boolean joker, int score) {
         String rowNumStr = Integer.toString(row);
         sb.append(rowNumStr);
@@ -144,6 +175,12 @@ public interface Scorecard {
         sb.append('\n');
     }
 
+    /**
+     * Static utility method which adds a "totals" row to the scorecard string builder.
+     * @param sb the string builder
+     * @param label the label for the totals row
+     * @param total the total score for the row
+     */
     public static void appendTotalsRow(StringBuilder sb, String label, int total) {
         String totalStr = Integer.toString(total);
         sb.append(label);
@@ -153,7 +190,12 @@ public interface Scorecard {
     }
 
 
-
+    /**
+     * Default instance method for calculating the score of the passed row number
+     * @param rowNumber the row number whose score to calculate
+     * @return the score for rowNumber
+     * @throws IllegalArgumentException if the rowNumber is less than 1 or greater than 13
+     */
     default public int getRowScore(int rowNumber) throws IllegalArgumentException {
         if (rowNumber < 1 || rowNumber > 13) {
             throw new IllegalArgumentException("rowNumber must be between 1 and 13: " + rowNumber);
@@ -163,7 +205,7 @@ public interface Scorecard {
         if (vals == null) return 0;
 
         if (rowNumber <= 6) {
-            return vals.countValuesWhichEqual(rowNumber) * rowNumber;
+            return vals.countValuesWhichEqual((byte)rowNumber) * rowNumber;
 
         } else switch (rowNumber) {
             case 7: // 3 of a kind
@@ -175,7 +217,7 @@ public interface Scorecard {
                 }
 
             case 9: // Full house (or joker)
-                return vals.hasFullHouse() || vals.isYahtzee() ? 25 : 0;
+                return vals.isFullHouse() || vals.isYahtzee() ? 25 : 0;
                 
             case 10: // Small straight (or joker)
                 return vals.isSmallStraight() || vals.isYahtzee() ? 30 : 0;
@@ -208,13 +250,13 @@ public interface Scorecard {
         
         if (this.getRow(sharedDiceValue) == null) {
             if (rowNumber != sharedDiceValue) {
-                throw new IllegalArgumentException("Forced Joker Rule: You must play a second Yahtzee to the appropriate upper row if available");
+                return "Forced Joker Rule: You must play a second Yahtzee to the appropriate upper row if available";
             }
         } else if (rowNumber < 6) {
             //confirm that all the lower slots are taken
             for (int i = 7; i <= 13; i++) {
                 if (this.getRow(i) != null) {
-                    throw new IllegalArgumentException("Force Joker Rule: If the appropriate upper section is taken, but a lower section is available, you must play a second Yahtzee to a lower section as a joker");
+                    return "Force Joker Rule: If the appropriate upper section is taken, but a lower section is available, you must play a second Yahtzee to a lower section as a joker";
                 }
             }
         }
@@ -222,7 +264,10 @@ public interface Scorecard {
         return null;
     }
 
-    
+    /**
+     * Default instance method for calculating the upper subtotal (before including the bonus line)
+     * @return
+     */
     default public int getUpperSubtotal() {
         int sum = 0;
         for (int i = 1; i <= 6; i++) {
@@ -231,14 +276,26 @@ public interface Scorecard {
         return sum;
     }
 
+    /**
+     * Default instance method for the upper half bonus
+     * @return
+     */
     default public int getUpperBonus() {
         return this.getUpperSubtotal() >= 63 ? 35 : 0;
     }
 
+    /**
+     * Default instance method for calculating the upper section total, including the bonus line
+     * @return
+     */
     default public int getUpperTotal() {
         return this.getUpperSubtotal() + this.getUpperBonus();
     }
 
+    /**
+     * Default instance method for calculating the lower section total
+     * @return
+     */
     default public int getLowerTotal() {
         int sum = 0;
         for (int i = 7; i <= 13; i++) {
@@ -247,9 +304,20 @@ public interface Scorecard {
         return sum;
     }
 
+    /**
+     * Default instance method for calculating the grand total of the entire scorecard
+     * @return
+     */
     default public int getGrandTotal() {
         return getUpperTotal() + getLowerTotal();
     }
+
+
+    /*
+     * The below are extra methods for getting the dice values and score of each of the rows, using the row name rather
+     * than an index number.  These are not really used anywhere in the existing code, but I included them in case they
+     * would be helpful.
+     */
 
     default public DiceValues getAces() {
         return getRow(1);
@@ -355,6 +423,9 @@ public interface Scorecard {
         return getRowScore(13);
     }
 
+    /**
+     * @return whether the scorecard has been fully filled out
+     */
     default public boolean isFinished() {
         for (int i = 1; i <= 13; i++) {
             if (this.getRow(i) == null) return false;

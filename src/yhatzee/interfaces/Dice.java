@@ -2,9 +2,12 @@ package yhatzee.interfaces;
 
 import yhatzee.records.DiceValues;
 
+/**
+ * Represents a collection of 5 dice
+ */
 public interface Dice {
     /**
-     * @return the array of current dice values, from the most recent roll
+     * @return the current dice values, from the most recent roll
      */
     public DiceValues getDiceValues();
 

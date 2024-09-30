@@ -4,6 +4,14 @@ import java.util.*;
 
 import yhatzee.interfaces.*;
 
+/**
+ * Represents an immutable array of 5 dice values, that may be sorted or not.  If the "sorted" boolean
+ * is passed to the constructor as true, the passed array of dice values will be cloned then sorted before
+ * being stored.
+ *  
+ * Typically the scorecard values are stored in sorted order, while the values during the round are not.
+ * 
+ */
 public record DiceValues(byte[] values, boolean sorted) {
     /**
      * replacement for toString when a DiceValues field is null
@@ -34,16 +42,6 @@ public record DiceValues(byte[] values, boolean sorted) {
         this(diceValues.values, diceValues.sorted);
     }
 
-    public DiceValues(Die[] dice, boolean sorted) {
-        this(new byte[] {
-            dice[0].getValue(),
-            dice[1].getValue(),
-            dice[2].getValue(),
-            dice[3].getValue(),
-            dice[4].getValue()
-        }, sorted);
-    }
-
     public DiceValues(List<Die> dice, boolean sorted) {
         this(new byte[] {
             dice.get(0).getValue(),
@@ -52,10 +50,6 @@ public record DiceValues(byte[] values, boolean sorted) {
             dice.get(3).getValue(),
             dice.get(4).getValue()
         }, sorted);
-    }
-
-    public DiceValues(Die[] dice) {
-        this(dice, false);
     }
 
     public DiceValues(List<Die> dice) {
@@ -96,9 +90,9 @@ public record DiceValues(byte[] values, boolean sorted) {
     /**
      * Used by upper section of scorecard
      * @param mustEqual
-     * @return
+     * @return the number of dice which equal the passed value
      */
-    public int countValuesWhichEqual(int mustEqual) {
+    public int countValuesWhichEqual(byte mustEqual) {
         int count = 0;
         for (int i = 0; i < 5; i++) {
             if (values[i] == mustEqual) count++;
@@ -106,6 +100,9 @@ public record DiceValues(byte[] values, boolean sorted) {
         return count;
     }
 
+    /**
+     * @return the sum of the dice values
+     */
     public int sumValues() {
         int sum = 0;
         for (int i = 0; i < 5; i++) {
@@ -133,16 +130,19 @@ public record DiceValues(byte[] values, boolean sorted) {
         return false;
     }
 
+    /**
+     * @return whether these dice values constitute a yahtzee
+     */
     public boolean isYahtzee() {
         return this.hasNOfAKind(5);
     }
 
     /**
      * 
-     * @return
+     * @return whether these dice values constitute a full house
      * @throws UnsupportedOperationException if the values array is not sorted
      */
-    public boolean hasFullHouse() throws UnsupportedOperationException {
+    public boolean isFullHouse() throws UnsupportedOperationException {
         if (!this.sorted) {
             throw new UnsupportedOperationException("values array must be sorted for hasFullHouse() method");
         }
@@ -157,8 +157,7 @@ public record DiceValues(byte[] values, boolean sorted) {
     }
 
     /**
-     * 
-     * @return
+     * @return whether these dice values constitute a large straight
      * @throws UnsupportedOperationException if the values array is not sorted
      */
     public boolean isLargeStraight() {
@@ -173,6 +172,9 @@ public record DiceValues(byte[] values, boolean sorted) {
         return true;
     }
 
+    /**
+     * @return whether these dice values constitute a small straight
+     */
     public boolean isSmallStraight() {
         boolean hasNumber[] = new boolean[6];
         for (int i = 0; i < 5; i++) {

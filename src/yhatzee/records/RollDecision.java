@@ -2,6 +2,9 @@ package yhatzee.records;
 
 import yhatzee.interfaces.*;
 
+/**
+ * Represents a player's decision to re-roll the dice, with certain dice to keep and others to re-roll
+ */
 public record RollDecision(boolean[] diceDecisions) implements Decision {
     public RollDecision(boolean[] diceDecisions) {
         if (diceDecisions == null || diceDecisions.length != 5) {

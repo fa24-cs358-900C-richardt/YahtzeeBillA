@@ -2,8 +2,6 @@ package yhatzee.interfaces;
 
 import java.util.*;
 
-import yhatzee.records.DiceValues;
-
 /**
  * Parent interface for Pregame and Game interfaces.  Includes the basic player and
  * dice-rolling methods.  Implemented as an Iterator, and a 'self-referencing Iterable' which
@@ -12,6 +10,9 @@ import yhatzee.records.DiceValues;
  */
 public interface TurnIterator extends Iterator<Player>, Iterable<Player> {
 
+    /**
+     * @return the dice to be used for this TurnIterator
+     */
     Dice getDice();
 
     /**

@@ -5,6 +5,9 @@ import java.util.*;
 import yhatzee.interfaces.*;
 import yhatzee.records.DiceValues;
 
+/**
+ * 
+ */
 public class StandardPregame extends BasicTurnIterator implements Pregame {
     protected final byte[] totals;
     protected List<Player> topRollers = null;
@@ -100,6 +103,13 @@ public class StandardPregame extends BasicTurnIterator implements Pregame {
         return new Tiebreaker(this.topRollers, this.dice);
     }
     
+    /**
+     * Recursive inner-class that extends the outer class, to be used for breaking ties in the pre-game.
+     * 
+     * Note that the getPlayers() method returns the full list of all players, by calling back to it's
+     * parent's getPlayers() method, while the getTiedPlayers() method only includes the players who are
+     * rolling to break the tie.
+     */
     public class Tiebreaker extends StandardPregame implements Pregame.Tiebreaker {
         private Tiebreaker(List<Player> tiedPlayers, Dice dice) {
             super(tiedPlayers, dice);

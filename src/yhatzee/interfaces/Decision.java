@@ -1,5 +1,9 @@
 package yhatzee.interfaces;
 
+/**
+ * Represent's a players decision as to whether to continue rolling dice (if available), which dice to
+ * re-roll and which to keep, OR which row in the scorecard to place the current dice values.
+ */
 public interface Decision {
     /**
      * @return -1 if the player wants to roll the dice again,

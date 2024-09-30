@@ -3,6 +3,9 @@ package yhatzee.interfaces;
 import yhatzee.records.*;
 import java.util.*;
 
+/**
+ * The basic outline of a controller that will call all the methods in the Game interface, to actually run the game
+ */
 public interface GameEngine {
     public void run();
     

@@ -3,6 +3,9 @@ package yhatzee.records;
 import yhatzee.interfaces.*;
 import java.util.*;
 
+/**
+ * Concrete implementation of the Dice interface, using an immutable List of 5 dice
+ */
 public record StandardDice (List<Die> dice) implements Dice {
     public StandardDice(List<Die> dice) {
         if (dice == null || dice.size() != 5) {

@@ -6,6 +6,10 @@ import java.util.*;
 import yhatzee.interfaces.*;
 import yhatzee.records.DiceValues;
 
+/**
+ * Concrete implementation of the GameEngine interface, which acts as the controller calling the various methods
+ * of the Game.
+ */
 public class StandardGameEngine implements GameEngine {
     public static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 

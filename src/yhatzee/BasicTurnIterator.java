@@ -5,7 +5,7 @@ import java.util.*;
 import yhatzee.interfaces.*;
 
 /**
- * Abstract implementation of TurnIterator interface, which defaults to using the fair die,
+ * Abstract implementation of the TurnIterator interface, which defaults to using the fair die,
  * but allows any list of dice to be passed in provided the list is non-null and has a size
  * of 5.
  * 

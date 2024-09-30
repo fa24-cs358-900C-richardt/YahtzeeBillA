@@ -6,7 +6,9 @@ import yhatzee.interfaces.Game;
 import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
-
+/**
+ * Concrete implementation of the Game interface and the BasicTurnIterator abstract class
+ */
 public class StandardGame extends BasicTurnIterator implements Game {
     private int currentRound = 0;
     private int startingPlayerIndex;
