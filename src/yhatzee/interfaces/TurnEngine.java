@@ -10,7 +10,7 @@ import yhatzee.records.DiceValues;
  * returns itself as its own stateful Iterator, since a game (or pre-game) can only be fully
  * iterated over once.
  */
-public interface DiceEngine extends Iterator<Player>, Iterable<Player> {
+public interface TurnEngine extends Iterator<Player>, Iterable<Player> {
 
     /**
      * Advances to the next player to roll
@@ -33,35 +33,6 @@ public interface DiceEngine extends Iterator<Player>, Iterable<Player> {
      */
     public Player getCurrentPlayer();
 
-    /**
-     * @return the array of current dice values, from the most recent roll
-     */
-    public DiceValues getDiceValues();
-
-    /**
-     * @param index the index of the die to get the value of
-     * @return the value of the die at the given index
-     */
-    public byte getDieValue(int index);
-
-    /**
-     * Roll all 5 dice
-     */
-    public void rollAllDice();
-
-    /**
-     * Rolls only the dice specified by the boolean arguments.  True means roll that die, while
-     * false means do not roll it.
-     * 
-     * @param die1 whether to roll die 1 (index 0)
-     * @param die2 whether to roll die 2 (index 1)
-     * @param die3 whether to roll die 3 (index 2)
-     * @param die4 whether to roll die 4 (index 3)
-     * @param die5 whether to roll die 5 (index 4)
-     */
-    public void rollSomeDice(Decision rollDecision);
-
-
 
     /**
      * For the implementation of Iterable interface, which simply returns self.  DiceRoller
@@ -70,7 +41,7 @@ public interface DiceEngine extends Iterator<Player>, Iterable<Player> {
      * 
      * @return this
      */
-    default DiceEngine iterator() {
+    default TurnEngine iterator() {
         return this;
     }
 

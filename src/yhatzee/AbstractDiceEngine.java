@@ -12,7 +12,7 @@ import yhatzee.records.DiceValues;
  * 
  * Intended for concrete implementation by StandardGame and StandardPregame
  */
-public abstract class AbstractDiceEngine implements DiceEngine {
+public abstract class AbstractDiceEngine implements TurnEngine {
     protected Player currentPlayer;
     protected int currentPlayerIndex = -1;
     protected int nextPlayerIndex = 0;
