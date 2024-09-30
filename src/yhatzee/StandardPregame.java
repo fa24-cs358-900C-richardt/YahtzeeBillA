@@ -5,7 +5,7 @@ import java.util.*;
 import yhatzee.interfaces.*;
 import yhatzee.records.DiceValues;
 
-public class StandardPregame extends AbstractDiceEngine implements Pregame {
+public class StandardPregame extends BasicTurnIterator implements Pregame {
     protected final byte[] totals;
     protected List<Player> topRollers = null;
 

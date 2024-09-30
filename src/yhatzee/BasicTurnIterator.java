@@ -3,17 +3,15 @@ package yhatzee;
 import java.util.*;
 
 import yhatzee.interfaces.*;
-import yhatzee.records.DiceValues;
-import yhatzee.records.StandardDice;
 
 /**
- * Abstract implementation of DiceRoller interface, which defaults to using the fair die,
+ * Abstract implementation of TurnIterator interface, which defaults to using the fair die,
  * but allows any list of dice to be passed in provided the list is non-null and has a size
  * of 5.
  * 
  * Intended for concrete implementation by StandardGame and StandardPregame
  */
-public abstract class AbstractDiceEngine implements TurnIterator {
+public abstract class BasicTurnIterator implements TurnIterator {
     protected Player currentPlayer;
     protected int currentPlayerIndex = -1;
     protected int nextPlayerIndex = 0;
@@ -21,11 +19,11 @@ public abstract class AbstractDiceEngine implements TurnIterator {
     protected final List<Player> players;
     protected final Dice dice;
 
-    protected AbstractDiceEngine(List<Player> players) {
+    protected BasicTurnIterator(List<Player> players) {
         this(players, FairDie.makeDice());
     }
 
-    protected AbstractDiceEngine(List<Player> players, Dice dice) {
+    protected BasicTurnIterator(List<Player> players, Dice dice) {
         if (players == null || players.size() < 1 || players.size() > 6) {
             throw new IllegalArgumentException("Illegal players array");
         }

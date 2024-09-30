@@ -6,7 +6,8 @@ import yhatzee.interfaces.Game;
 import yhatzee.interfaces.Player;
 import yhatzee.interfaces.Pregame;
 
-public class StandardGame extends AbstractDiceEngine implements Game {
+
+public class StandardGame extends BasicTurnIterator implements Game {
     private int currentRound = 0;
     private int startingPlayerIndex;
 
