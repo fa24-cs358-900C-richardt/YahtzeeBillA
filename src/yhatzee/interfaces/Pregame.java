@@ -1,12 +1,15 @@
 package yhatzee.interfaces;
 
+import yhatzee.records.*;
 import java.util.List;
 
 /**
  * Represents the pre-game stage at which players roll dice to see who goes first
  */
 
-public interface Pregame extends TurnEngine {
+public interface Pregame extends TurnIterator {
+    public void setCurrentPlayerTotal(DiceValues diceValues) throws IndexOutOfBoundsException;
+
     /**
      * 
      * @return the total dice roll for the current player.  0 if they have not rolled yet

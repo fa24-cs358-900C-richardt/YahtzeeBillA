@@ -54,19 +54,59 @@ public class StandardGameEngine implements GameEngine {
         }
     }
 
-    private DiceEngine currentGame;
+    private TurnIterator currentGame;
 
-    public DiceEngine getCurrentGame() {
+    public TurnIterator getCurrentGame() {
         return this.currentGame;
     }
 
-    public Pregame makePregame(List<Player> players) {
-        return new StandardPregame(players, Arrays.asList(LoadedDie.makeDice(1, 1, 1, 200, 1, 1)))
+    @Override
+    public void run() {
+        List<Player> players = this.initPlayers();
+        Pregame finishedPregame = this.runPregame(this.makePregame(players));
+        Game game = makeGame(finishedPregame);
+        this.runGame(game);
+        this.printResult(game);
     }
 
+    @Override
+    public Pregame makePregame(List<Player> players) {
+        return new StandardPregame(players, FairDie.makeDice()); //LoadedDie.makeDice(1, 1, 1, 1, 1, 200));
+    }
+
+    @Override
     public Game makeGame(Pregame finishedPregame) {
         return new StandardGame(finishedPregame);
     }
+
+    @Override
+    public void runGame(Game game) {
+        this.currentGame = game;
+        for (Player player : game) {
+            runPlayerRound(game, player);
+        }
+    }
+
+    public void printResult(Game game) {
+        System.out.println();
+        System.out.println("FINAL SCORECARDS");
+        System.out.println();
+
+        for (Player player : game.getPlayers()) {
+            System.out.println(player.getName());
+            System.out.println(player.getScorecard());
+            System.out.println();
+        }
+
+        List<Player> ranking = game.getFinalRanking();
+
+        System.out.println("Final ranking:");
+        for (Player player : ranking) {
+            System.out.println(player.getName() + ": " + player.getScorecard().getGrandTotal());
+        }
+    }
+
+    
 
     public List<Player> initPlayers() {
         int numPlayers = getInt(1, 6, "How many players? (1-6)");
@@ -105,8 +145,9 @@ public class StandardGameEngine implements GameEngine {
         
         for (Player player : pregame) {
             System.out.print("Rolling dice for " + player.getName() + " : ");
-            pregame.rollAllDice();
-            DiceValues diceValues = pregame.getDiceValues();
+            pregame.getDice().rollAllDice();
+            DiceValues diceValues = pregame.getDice().getDiceValues();
+            pregame.setCurrentPlayerTotal(diceValues);
             System.out.println(diceValues + "Total: " + pregame.getCurrentPlayerTotal());
         }
 

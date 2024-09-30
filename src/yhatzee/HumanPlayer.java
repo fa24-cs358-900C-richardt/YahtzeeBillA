@@ -11,7 +11,7 @@ import yhatzee.records.ScorecardDecision;
 
 public class HumanPlayer implements Player {
     private final String name;
-    private Scorecard scorecard;
+    private Scorecard scorecard = new FairScorecard();
     
     public HumanPlayer(String name) {
         this.name = name;
@@ -31,7 +31,9 @@ public class HumanPlayer implements Player {
 
     @Override
     public Decision makeFirstRollDecision(DiceValues diceValues) {
-        System.out.println("First dice roll results:");
+        System.out.println(this.name + "'s turn");
+        System.out.println(scorecard);
+        System.out.println(this.name + "'s first dice roll results:");
         System.out.println(diceValues.toString());
         System.out.println("You have two more rolls left for this round.");
         if (whatToDo()) {
@@ -43,7 +45,7 @@ public class HumanPlayer implements Player {
 
     @Override
     public Decision makeSecondRollDecision(DiceValues diceValues) {
-        System.out.println("Second dice roll results:");
+        System.out.println(this.name + "'s second dice roll results:");
         System.out.println(diceValues.toString());
         System.out.println("You have one more roll left for this round.");
         if (whatToDo()) {
@@ -55,7 +57,7 @@ public class HumanPlayer implements Player {
 
     @Override
     public ScorecardDecision makeThirdRollDecision(DiceValues diceValues) {
-        System.out.println("Third dice roll results:");
+        System.out.println(this.name + "'s third dice roll results:");
         System.out.println(diceValues.toString());
         System.out.println("That was your last roll left for this round.");
         return (ScorecardDecision)enterScorecardDecision(diceValues, false);
@@ -74,7 +76,7 @@ public class HumanPlayer implements Player {
      */
     private boolean whatToDo() {
         while (true) {
-            System.out.print("What would you like to do?  R to roll, S to record on Scorecard");
+            System.out.print("What would you like to do?  R to roll, S to record on Scorecard> ");
 
             String line = readLine();
 
@@ -106,13 +108,13 @@ public class HumanPlayer implements Player {
                 char c = line.charAt(i);
                 if (c == ' ') continue;
                 if (c == 'R' || c == 'r') {
-                    if (decisionIndex < 4) {
+                    if (decisionIndex < 5) {
                         decision[decisionIndex] = true;
                     }
                     decisionIndex++;
 
                 } else if (c == 'K' || c == 'k') {
-                    if (decisionIndex < 4) {
+                    if (decisionIndex < 5) {
                         decision[decisionIndex] = false;
                     }
                     decisionIndex++;
@@ -133,8 +135,8 @@ public class HumanPlayer implements Player {
     }
 
     private Decision enterScorecardDecision(DiceValues diceValues, boolean allowReroll) {
+        System.out.println(this.scorecard);
         while (true) {
-            System.out.println(this.scorecard);
             System.out.print("Please enter the row number you'd like to enter these dice values into.");
             if (allowReroll) {
                 System.out.println("  R to reroll");
@@ -163,15 +165,15 @@ public class HumanPlayer implements Player {
             } else if (this.scorecard.getRow(row) != null) {
                 System.out.println("Invalid entry.  Row " + row + " is already taken.");
 
-            } else if (diceValues.isYahtzee()) {
-                String forcedJoker = this.scorecard.forcedJokerCheck(row, diceValues.get(0));
-                if (forcedJoker != null) {
-                    System.out.println(forcedJoker);
-                } else {
-                    return new ScorecardDecision(row);
-                }
-
             } else {
+                if (diceValues.isYahtzee()) {
+                    String forcedJoker = this.scorecard.forcedJokerCheck(row, diceValues.get(0));
+                    if (forcedJoker != null) {
+                        System.out.println(forcedJoker);
+                        continue;
+                    }
+                }
+                System.out.println();
                 return new ScorecardDecision(row);
             }
         }

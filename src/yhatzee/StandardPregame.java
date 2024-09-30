@@ -2,26 +2,22 @@ package yhatzee;
 
 import java.util.*;
 
-import yhatzee.interfaces.Die;
-import yhatzee.interfaces.Game;
-import yhatzee.interfaces.Player;
-import yhatzee.interfaces.Pregame;
+import yhatzee.interfaces.*;
+import yhatzee.records.DiceValues;
 
 public class StandardPregame extends AbstractDiceEngine implements Pregame {
     protected final byte[] totals;
     protected List<Player> topRollers = null;
 
-    protected StandardPregame(List<Player> players) {
+    public StandardPregame(List<Player> players) {
         super(players);
         this.totals = new byte[this.players.size()];
     }
 
-    protected StandardPregame(List<Player> players, List<Die> dice) {
+    public StandardPregame(List<Player> players, Dice dice) {
         super(players, dice);
         this.totals = new byte[this.players.size()];
     }
-
-    
 
     /**
      * Players go in the order they were entered.  This method should be called AFTER each
@@ -45,29 +41,6 @@ public class StandardPregame extends AbstractDiceEngine implements Pregame {
         return this.currentPlayer;
     }
 
-    
-
-    @Override
-    public void rollAllDice() {
-        if (this.currentPlayerIndex < 0) {
-            throw new IllegalStateException("The first player has not yet been queued up.  Call next() first");
-
-        } else if (totals[this.currentPlayerIndex] != 0) {
-            throw new IllegalStateException("The current player has already rolled!");
-        }
-
-        super.rollAllDice();
-
-        for (Die die : dice) {
-            totals[this.currentPlayerIndex] += die.getValue();
-        }
-    }
-
-    @Override
-    public void rollSomeDice(boolean die1, boolean die2, boolean die3, boolean die4, boolean die5) {
-        throw new UnsupportedOperationException("rollSomeDice not supported in Pregame");
-    }
-
     /**
      * @return a clone of the player totals.  Zero indicates the player has not rolled yet.
      * A clone of the totals array is returned to protect encapsulation, so the original
@@ -76,6 +49,11 @@ public class StandardPregame extends AbstractDiceEngine implements Pregame {
     @Override
     public byte[] getPlayerTotals() {
         return totals.clone();
+    }
+
+    @Override
+    public void setCurrentPlayerTotal(DiceValues diceValues) {
+        this.totals[this.currentPlayerIndex] = (byte)diceValues.sumValues();
     }
 
     @Override
@@ -123,7 +101,7 @@ public class StandardPregame extends AbstractDiceEngine implements Pregame {
     }
     
     public class Tiebreaker extends StandardPregame implements Pregame.Tiebreaker {
-        private Tiebreaker(List<Player> tiedPlayers, List<Die> dice) {
+        private Tiebreaker(List<Player> tiedPlayers, Dice dice) {
             super(tiedPlayers, dice);
         }
 

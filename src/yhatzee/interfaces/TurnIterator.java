@@ -7,10 +7,12 @@ import yhatzee.records.DiceValues;
 /**
  * Parent interface for Pregame and Game interfaces.  Includes the basic player and
  * dice-rolling methods.  Implemented as an Iterator, and a 'self-referencing Iterable' which
- * returns itself as its own stateful Iterator, since a game (or pre-game) can only be fully
+ * returns itself as its own stateful Iterator, since a game (or pre-game) should only be fully
  * iterated over once.
  */
-public interface TurnEngine extends Iterator<Player>, Iterable<Player> {
+public interface TurnIterator extends Iterator<Player>, Iterable<Player> {
+
+    Dice getDice();
 
     /**
      * Advances to the next player to roll
@@ -33,7 +35,6 @@ public interface TurnEngine extends Iterator<Player>, Iterable<Player> {
      */
     public Player getCurrentPlayer();
 
-
     /**
      * For the implementation of Iterable interface, which simply returns self.  DiceRoller
      * is both an iterable and its own stateful iterator, since a game (or pre-game) can only
@@ -41,7 +42,7 @@ public interface TurnEngine extends Iterator<Player>, Iterable<Player> {
      * 
      * @return this
      */
-    default TurnEngine iterator() {
+    default TurnIterator iterator() {
         return this;
     }
 

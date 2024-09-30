@@ -161,13 +161,34 @@ public record DiceValues(byte[] values, boolean sorted) {
      * @return
      * @throws UnsupportedOperationException if the values array is not sorted
      */
-    public boolean hasStraight(int starting, int ending) {
+    public boolean isLargeStraight() {
         if (!this.sorted) {
             throw new UnsupportedOperationException("values array must be sorted for hasStraight() method");
         }
-        for (int i = 0; i < ending - 1; i++) {
-            if (values[i] + 1 != values[i + 1]) return false;
+        for (int i = 0; i < 4; i++) {
+            if (this.values[i] + 1 != this.values[i + 1]) {
+                return false;
+            }
         }
         return true;
+    }
+
+    public boolean isSmallStraight() {
+        boolean hasNumber[] = new boolean[6];
+        for (int i = 0; i < 5; i++) {
+            hasNumber[this.values[i] - 1] = true;
+        }
+
+        int runLen = 0;
+        for (int i = 0; i < 6; i++) {
+            if (hasNumber[i]) {
+                runLen++;
+            } else if (runLen >= 4) {
+                return true;
+            } else {
+                runLen = 0;
+            }
+        }
+        return false;
     }
 }

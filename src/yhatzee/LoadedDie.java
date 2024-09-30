@@ -1,17 +1,20 @@
 package yhatzee;
+
+import yhatzee.interfaces.*;
+import yhatzee.records.*;
+
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import yhatzee.interfaces.Die;
-
 public class LoadedDie implements Die {
-    public static Die[] makeDice(int weight1, int weight2, int weight3, int weight4, int weight5, int weight6) {
-        return new Die[] {
+    public static Dice makeDice(int weight1, int weight2, int weight3, int weight4, int weight5, int weight6) {
+        return new StandardDice(List.of(
             new LoadedDie(weight1, weight2, weight3, weight4, weight5, weight6),
             new LoadedDie(weight1, weight2, weight3, weight4, weight5, weight6),
             new LoadedDie(weight1, weight2, weight3, weight4, weight5, weight6),
             new LoadedDie(weight1, weight2, weight3, weight4, weight5, weight6),
             new LoadedDie(weight1, weight2, weight3, weight4, weight5, weight6)
-        };
+        ));
     }
 
     private byte value;

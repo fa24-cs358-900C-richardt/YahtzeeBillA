@@ -11,7 +11,7 @@ public class StandardGame extends AbstractDiceEngine implements Game {
     private int startingPlayerIndex;
 
     public StandardGame(Pregame pregame) {
-        super(pregame.getPlayers());
+        super(pregame.getPlayers(), pregame.getDice());
         List<Player> topRollers = pregame.getTopRollers();
         if (topRollers == null || topRollers.size() != 1 || topRollers.get(0) == null) {
             throw new IllegalStateException("Pre-game was not propertly completed");
@@ -48,7 +48,9 @@ public class StandardGame extends AbstractDiceEngine implements Game {
         if (this.currentPlayerIndex == this.startingPlayerIndex) {
             this.currentRound++;
 
-        } else if (this.currentRound == 13 && this.nextPlayerIndex == this.startingPlayerIndex) {
+        }
+        
+        if (this.currentRound == 13 && this.nextPlayerIndex == this.startingPlayerIndex) {
             this.nextPlayerIndex = -1;
         }
         

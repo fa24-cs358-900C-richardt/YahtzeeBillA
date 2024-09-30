@@ -4,12 +4,7 @@ import yhatzee.records.*;
 import java.util.*;
 
 public interface GameEngine {
-    default public void run() {
-        List<Player> players = this.initPlayers();
-        Pregame finishedPregame = this.runPregame(this.makePregame(players));
-        Game game = makeGame(finishedPregame);
-        this.runGame(game);
-    }
+    public void run();
     
     /**
      * Initialize the list of players
@@ -42,16 +37,12 @@ public interface GameEngine {
      * Run the full game
      * @param game
      */
-    default void runGame(Game game) {
-        for (Player player : game) {
-            runPlayerRound(game, player);
-        }
-    }
+    void runGame(Game game);
 
     default void runPlayerRound(Game game, Player player) {
-        game.rollAllDice();
+        game.getDice().rollAllDice();
         
-        DiceValues diceVals = game.getDiceValues();
+        DiceValues diceVals = game.getDice().getDiceValues();
         Decision decision = player.makeFirstRollDecision(diceVals);
         int row = decision.getScorecardRowDecision();
         if (row > 0) {
@@ -59,8 +50,8 @@ public interface GameEngine {
             return;
         }
 
-        game.rollSomeDice(decision);
-        diceVals = game.getDiceValues();
+        game.getDice().rollSomeDice(decision);
+        diceVals = game.getDice().getDiceValues();
         decision = player.makeSecondRollDecision(diceVals);
         row = decision.getScorecardRowDecision();
         if (row > 0) {
@@ -68,8 +59,8 @@ public interface GameEngine {
             return;
         }
 
-        game.rollSomeDice(decision);
-        diceVals = game.getDiceValues();
+        game.getDice().rollSomeDice(decision);
+        diceVals = game.getDice().getDiceValues();
         decision = player.makeThirdRollDecision(diceVals);
         row = decision.getScorecardRowDecision();
         

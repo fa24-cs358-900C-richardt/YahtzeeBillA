@@ -57,14 +57,15 @@ public interface Scorecard {
     public static final int YHATZEE_BONUS = 50; // bonus for rolling a yahtzee when the yahtzee row was alrady filled with a scoring roll
 
 
-    public static final String JOKER = " (joker) ";
+    public static final String JOKER = "(joker)";
 
     public static final int MAX_ROW_NAME_WIDTH = ROWS_BY_NAME.keySet().stream().mapToInt(String::length).max().getAsInt();
-    public static final int FIRST_COLUMN_WIDTH = MAX_ROW_NAME_WIDTH + 2;
+    public static final int NUMBER_COLUMN_WIDTH = 4;
+    public static final int NAME_COLUMN_WIDTH = MAX_ROW_NAME_WIDTH + 2;
     public static final int DICE_VALUES_COLUMN_WIDTH = DiceValues.NULL_STRING.length();
     public static final int JOKER_COLUMN_WIDTH = JOKER.length();
-    public static final int TOTALS_COLUMN_WIDTH = 7;
-    public static final int ALL_COLUMNS_WIDTH = FIRST_COLUMN_WIDTH + DICE_VALUES_COLUMN_WIDTH + JOKER_COLUMN_WIDTH + TOTALS_COLUMN_WIDTH;
+    public static final int TOTALS_COLUMN_WIDTH = 4;
+    public static final int ALL_COLUMNS_WIDTH = NUMBER_COLUMN_WIDTH + NAME_COLUMN_WIDTH + DICE_VALUES_COLUMN_WIDTH + JOKER_COLUMN_WIDTH + TOTALS_COLUMN_WIDTH;
     public static final String SEPERATOR = "-".repeat(ALL_COLUMNS_WIDTH) + "\n";
 
 
@@ -106,8 +107,6 @@ public interface Scorecard {
 
         sb.append(SEPERATOR);
 
-        sb.append(sb.length());
-
         return sb.toString();
     }
 
@@ -118,9 +117,14 @@ public interface Scorecard {
     }
 
     public static void appendRow(StringBuilder sb, int row, DiceValues vals, boolean joker, int score) {
+        String rowNumStr = Integer.toString(row);
+        sb.append(rowNumStr);
+        sb.append(')');
+        appendSpaces(sb, NUMBER_COLUMN_WIDTH - rowNumStr.length() - 1);
+
         String rowName = ROWS_BY_NUMBER.get(row);
         sb.append(rowName);
-        appendSpaces(sb, FIRST_COLUMN_WIDTH - rowName.length());
+        appendSpaces(sb, NAME_COLUMN_WIDTH - rowName.length());
         
         if (vals == null) {
             sb.append(DiceValues.NULL_STRING);
@@ -174,10 +178,10 @@ public interface Scorecard {
                 return vals.hasFullHouse() || vals.isYahtzee() ? 25 : 0;
                 
             case 10: // Small straight (or joker)
-                return vals.hasStraight(0, 3) || vals.hasStraight(1, 4) || vals.isYahtzee() ? 30 : 0;
+                return vals.isSmallStraight() || vals.isYahtzee() ? 30 : 0;
 
             case 11: // Large straight (or joker)
-                return vals.hasStraight(0, 4) || vals.isYahtzee() ? 40 : 0;
+                return vals.isLargeStraight() || vals.isYahtzee() ? 40 : 0;
                 
             case 12: // Yahtzee
                 return vals.isYahtzee() ? 50 : 0;

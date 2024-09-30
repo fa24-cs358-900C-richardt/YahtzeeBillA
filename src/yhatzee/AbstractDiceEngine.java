@@ -4,6 +4,7 @@ import java.util.*;
 
 import yhatzee.interfaces.*;
 import yhatzee.records.DiceValues;
+import yhatzee.records.StandardDice;
 
 /**
  * Abstract implementation of DiceRoller interface, which defaults to using the fair die,
@@ -12,29 +13,29 @@ import yhatzee.records.DiceValues;
  * 
  * Intended for concrete implementation by StandardGame and StandardPregame
  */
-public abstract class AbstractDiceEngine implements TurnEngine {
+public abstract class AbstractDiceEngine implements TurnIterator {
     protected Player currentPlayer;
     protected int currentPlayerIndex = -1;
     protected int nextPlayerIndex = 0;
 
     protected final List<Player> players;
-    protected final List<Die> dice;
+    protected final Dice dice;
 
     protected AbstractDiceEngine(List<Player> players) {
-        this(players, Arrays.asList(FairDie.makeDice()));
+        this(players, FairDie.makeDice());
     }
 
-    protected AbstractDiceEngine(List<Player> players, List<Die> dice) {
+    protected AbstractDiceEngine(List<Player> players, Dice dice) {
         if (players == null || players.size() < 1 || players.size() > 6) {
             throw new IllegalArgumentException("Illegal players array");
         }
-        if (dice == null || dice.size() != 5) {
-            throw new IllegalArgumentException("Illegal dice array");
+        if (dice == null) {
+            throw new NullPointerException("dice must be non-null");
         }
 
         //shallow-copy the arrays to a local copy, to ensure encapsulation
         this.players = Collections.unmodifiableList(new ArrayList<>(players));
-        this.dice = Collections.unmodifiableList(new ArrayList<>(dice));
+        this.dice = dice;
     }
 
     @Override
@@ -51,25 +52,7 @@ public abstract class AbstractDiceEngine implements TurnEngine {
         return currentPlayer;
     }
 
-    public DiceValues getDiceValues() {
-        return new DiceValues(dice);
-    }
-
-    public byte getDieValue(int index) throws IndexOutOfBoundsException {
-        return dice.get(index).getValue();
-    }
-
-    public void rollAllDice() {
-        for (Die die : dice) {
-            die.roll();
-        }
-    }
-
-    public void rollSomeDice(Decision decision) {
-        if (decision.getDieDecision(0)) dice.get(0).roll();
-        if (decision.getDieDecision(1)) dice.get(1).roll();
-        if (decision.getDieDecision(2)) dice.get(2).roll();
-        if (decision.getDieDecision(3)) dice.get(3).roll();
-        if (decision.getDieDecision(4)) dice.get(4).roll();
+    public Dice getDice() {
+        return dice;
     }
 }

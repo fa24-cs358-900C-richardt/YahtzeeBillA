@@ -15,7 +15,7 @@ public class FairScorecard implements Scorecard {
 
     @Override
     public DiceValues getRow(int rowNumber) throws IndexOutOfBoundsException {
-        return this.rows[rowNumber];
+        return this.rows[rowNumber - 1]; // row numbers are 1-indexed
     }
 
     @Override
@@ -25,7 +25,7 @@ public class FairScorecard implements Scorecard {
 
     @Override
     public void setRow(int rowNumber, DiceValues diceValues) {
-        if (this.rows[rowNumber] != null) {
+        if (this.rows[rowNumber - 1] != null) {
             throw new IllegalArgumentException("Cannot overwrite an already established row");
         }
         if (diceValues == null)  {
@@ -45,7 +45,7 @@ public class FairScorecard implements Scorecard {
             }
         }
 
-        this.rows[rowNumber] = diceValues;
+        this.rows[rowNumber - 1] = new DiceValues(diceValues, true);
 
         //invalidate the cached totals
         if (rowNumber <= 6) {
@@ -90,5 +90,9 @@ public class FairScorecard implements Scorecard {
             this.grandTotal = Scorecard.super.getGrandTotal();
         }
         return this.grandTotal;
+    }
+
+    public String toString() {
+        return this.string();
     }
 }
